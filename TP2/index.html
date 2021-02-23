@@ -21,7 +21,8 @@
         <!-- onmouseout est le contraire à onmouseover-->
         <div id="nom" onmouseover="survoler(event);"  onmouseout="cacherBulle();" class="col-xs-12">
             <div id="version">Version 1</div>
-            <input type="button" id="buttonActu" value="Actualiser" onclick="actualiser();"  />
+            
+            <input type="button" id="buttonActu" value="Actualiser" onclick="actualiserPeriodiquement();" />
             <input type="checkbox" id="automatiquement" name="automatiquement" onchange="actualiser();" onclick="toggleImage();"/>
             <!-- le for permet d'appuyer sur automiquement et caser la case-->
             <label  id="labelAutour" for="automatiquement">automatiquemet</label> 
@@ -30,11 +31,12 @@
     </div>
     
     <div id="col">
-        <div id="cadreSaisie" class="cadre" class="col-md-6" class="col-sm-12" class="col-xs-12">
+        <div id="cadreSaisie" class="cadre col-md-6 col-sm-12 col-xs-12">
             <textarea id="saisie" onkeyup="saisir();" >Saisie ici</textarea>
         </div>
 
-        <div id="cadreVisuel" class="cadre" class="col-md-6" class="col-sm-12" class="col-xs-12">
+        <div id="cadreVisuel" class="cadre col-md-6 col-sm-12 col-xs-12">
+            <img id="imgLoad" src="ajaxLoader.gif"/>
             <p> interieur du div edition</p>
         </div>
     </div>

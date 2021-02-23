@@ -13,6 +13,9 @@ keypress
 var refImgLoad = null;
 var refBulle = null;
 
+var lastTO = false;
+var lastTP = false;
+
 function init(){
     //console.log("init: fin chargement page"); //trace d'execution
     refSaisie = document.getElementById("saisie");
@@ -31,10 +34,24 @@ function actualiser(){
     refVisuel.innerHTML = contenu;
 }
 
+function actualiserPeriodiquement(){
+    actualiser();
+    if(refAutomatiquement.checked){
+        if(lastTP != false) clearInterval(lastTP);
+        lastTP = window.setInterval(actualiser,3000);
+    } else{
+        if(lastTP!= false) clearInterval(lastTP);
+        lastTP = false;
+    }
+        
+}
+
+
 function saisir(){
+    //V4: on veut desactiver ce traitment 
     if(refAutomatiquement.checked == true){
-        console.log("check true");
-        actualiser();
+        //console.log("check true");
+        //actualiser();
     }
 
 }
@@ -56,9 +73,9 @@ function annulerSaisieAuto(contexte) {
 	console.log(contexte);
 
 	// https://caniuse.com permet de trouver quelle propriété est la plus standard
-	console.log("which" + contexte.which);
+	/*console.log("which" + contexte.which);
 	console.log("keyCode" + contexte.keyCode);
-	console.log("code" + contexte.code);
+	console.log("code" + contexte.code);*/
 
 	if (contexte.code == "Escape") {
 		refAutomatiquement.checked = false;
@@ -68,7 +85,7 @@ function annulerSaisieAuto(contexte) {
 }
 
 function survoler(contexte){
-    console.log(contexte.target.id);
+    //console.log(contexte.target.id);
     //clientX, client Y: coordonnées souris sur l'écran 
     //quand je survole la banniere (#nom)? quand le buttom?
     //quel est l'element survole?
@@ -91,7 +108,7 @@ function survoler(contexte){
     }
     //if(refBulle.innerHTML!=""){
     refBulle.style.top=(parseInt(contexte.clientY) +15) + "px";
-    console.log(contexte.clientY);
+    //console.log(contexte.clientY);
 
     //window.innerWidth pour calculer et connaitre la tailler de l'écran
     if(contexte.clientX < window.innerWidth/2) {
