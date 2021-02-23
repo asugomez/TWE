@@ -18,12 +18,13 @@
     <span id="infoBulle"> Message </span>
     
     <div id="col">
-        <div id="nom" onmouseover="survoler();" class="col-xs-12">
+        <!-- onmouseout est le contraire à onmouseover-->
+        <div id="nom" onmouseover="survoler(event);"  onmouseout="cacherBulle();" class="col-xs-12">
             <div id="version">Version 1</div>
-            <input type="button" value="Actualiser" onclick="actualiser();"  />
+            <input type="button" id="buttonActu" value="Actualiser" onclick="actualiser();"  />
             <input type="checkbox" id="automatiquement" name="automatiquement" onchange="actualiser();" onclick="toggleImage();"/>
             <!-- le for permet d'appuyer sur automiquement et caser la case-->
-            <label  for="automatiquement">automatiquemet</label> 
+            <label  id="labelAutour" for="automatiquement">automatiquemet</label> 
             <img id="imgLoad" src="ajaxLoader.gif"/>
         </div>
     </div>

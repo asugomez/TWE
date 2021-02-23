@@ -11,7 +11,7 @@ keydown
 keypress
 */
 var refImgLoad = null;
-
+var refBulle = null;
 
 function init(){
     //console.log("init: fin chargement page"); //trace d'execution
@@ -19,6 +19,7 @@ function init(){
     refVisuel = document.getElementById("cadreVisuel");
     refAutomatiquement = document.getElementById("automatiquement");
     refImgLoad = document.getElementById("imgLoad");
+    refBulle = document.getElementById("infoBulle");
 }
 
 function actualiser(){
@@ -28,8 +29,6 @@ function actualiser(){
     //console.log("contenu: "+ contenu);
     //ecrire ce contenu dans le #cadreVisuel
     refVisuel.innerHTML = contenu;
-    
-
 }
 
 function saisir(){
@@ -66,6 +65,55 @@ function annulerSaisieAuto(contexte) {
 		toggleImage();
 	}
 
+}
+
+function survoler(contexte){
+    console.log(contexte.target.id);
+    //clientX, client Y: coordonnées souris sur l'écran 
+    //quand je survole la banniere (#nom)? quand le buttom?
+    //quel est l'element survole?
+    //contexte.target
+    var elementID= contexte.target.id;
+    
+    switch(elementID){
+        case "buttonActu": 
+            refBulle.innerHTML = "cliquer pour actualiser";
+            break;
+        case "automatiquement": 
+            refBulle.innerHTML = "cocher pour actualiser";
+            break;
+        case "labelAutour": 
+            refBulle.innerHTML = "cliquer pour cocher";
+            break;
+        default:
+            //refBulle.innerHTML= "";
+           return;    
+    }
+    //if(refBulle.innerHTML!=""){
+    refBulle.style.top=(parseInt(contexte.clientY) +15) + "px";
+    console.log(contexte.clientY);
+
+    //window.innerWidth pour calculer et connaitre la tailler de l'écran
+    if(contexte.clientX < window.innerWidth/2) {
+        //bulle a droite
+        refBulle.style.left=(parseInt(contexte.clientX)) + "px";
+        refBulle.style.right="";
+    }
+    else{
+        //bulle a gauche
+        refBulle.style.left ="";
+        refBulle.style.right=(parseInt(window.innerWidth) - parseInt(contexte.clientX)) + "px";
+        
+    }
+    refBulle.style.display = "inline";
+
+    //cacher la boule dans 2 seconde
+    window.setTimeout(cacherBulle,1000)
+}
+
+
+function cacherBulle(){
+    refBulle.style.display = "none";
 }
 
 (function(global){
