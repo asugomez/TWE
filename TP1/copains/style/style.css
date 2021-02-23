@@ -1,0 +1,128 @@
+@font-face {
+	font-family: "Bebas";
+	font-weight: bold;
+	src: url('https://www.1001freefonts.com/bebas.font');
+}
+
+body{
+    margin: 50px 30px;
+    border: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align:justify;
+    background-color: black;
+    color: #ddd;
+
+    /*zoom: 2.5;*/
+    overflow: scroll;
+    counter-reset: section;  
+}
+
+h1{
+    text-align: center;
+    font-style: italic;
+    text-transform: uppercase;
+    margin-bottom: 50px;
+}
+
+p{
+    text-align:justify;
+    margin: 30px;
+}
+
+
+#first::first-letter{
+    text-transform: capitalize;
+    font-size: 600%;
+    float: left;
+    background: #ddd;
+    color: rgb(109, 103, 103);
+    padding: 5px 10px;
+    margin: 15px;
+    font-family: 'Bebas';
+}
+
+
+#copain{
+    text-align: center;
+    clear: none;
+}
+
+
+
+
+#imagen{
+    
+    border:1px solid  #ddd;
+    margin: 15px 30px;
+    padding: 10px;
+    
+
+    align-items: center;
+    float: right;
+
+    /*-moz-box-shadow: 1px 1px 3px #222;
+    -moz-transform: rotate(-5deg);
+    -webkit-box-shadow: 1px 1px 3px #222;
+    -webkit-transform: rotate(-5deg);
+    box-shadow: 1px 1px 3px #222;
+    -o-transform: rotate(-5deg);
+    transform: rotate(-5deg);*/
+}
+
+#copain > .imgType2{
+    float: left;
+
+}
+img{
+    width:180px;
+    height:180px;
+
+}
+
+#imagen:hover {
+    box-shadow: 0 0 20px;
+	cursor: pointer;
+}
+
+#imagen > div{
+    opacity: 0;
+    transition: all 0.5s;
+}
+
+#imagen:hover #text-image{
+    opacity: 1;
+
+}
+
+#text-image::before{
+    counter-increment: section;                /* On incrémente le compteur section */
+    content: "Image " counter(section) " : "; /* On affiche le compteur */
+}
+
+a:link {
+    color: red;
+}
+
+
+
+#signature {
+    /*position: fixed;*/
+    margin-top: 10px;
+    padding-right: 40px;
+    border-top: 1px solid white;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background-color: black;
+
+    opacity: 0.8;
+}
+
+#signature > p{
+    text-align: right;
+}
+
+

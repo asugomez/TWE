@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- **** H E A D **** -->
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Try It Editor</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body onload="init();" onkeyup="annulerSaisieAuto();">
+    <header>
+        <h1> Try It Editor! </h1>
+    </header>
+    
+    <div id="col">
+        <div id="nom" class="col-xs-12">
+            <div id="version">Version 1</div>
+            <input type="button" value="Actualiser" onclick="actualiser();"/>
+            <input type="checkbox" id="automatiquement" name="automatiquement" onchange="actualiser();" onclick="toggleImage();"/>
+            <!-- le for permet d'appuyer sur automiquement et caser la case-->
+            <label for="automatiquement">automatiquemet</label> 
+            <img id="imgLoad" src="ajaxLoader.gif"/>
+        </div>
+    </div>
+    
+    <div id="col">
+        <div id="cadreSaisie" class="cadre" class="col-md-6" class="col-sm-12" class="col-xs-12">
+            <textarea id="saisie" onkeyup="saisir();">Saisie ici</textarea>
+        </div>
+
+        <div id="cadreVisuel" class="cadre" class="col-md-6" class="col-sm-12" class="col-xs-12">
+            <p> interieur du div edition</p>
+        </div>
+    </div>
+
+    <footer>
+
+    </footer>
+
+    <!-- jQuery (Bootstrap JS plugins depend on it) -->
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/script.js"></script>
+
+</body>
+</html>
