@@ -50,7 +50,21 @@ function toggleImage(){
     }
 }
 
-function annulerSaisieAuto(){
+//si on appuie sur escape, la case disparaite 
+function annulerSaisieAuto(contexte) {
+	console.log("annulerSaisieAuto");
+	// comment savoir quelle est la touche qui a été appuyée ?
+	console.log(contexte);
+
+	// https://caniuse.com permet de trouver quelle propriété est la plus standard
+	console.log("which" + contexte.which);
+	console.log("keyCode" + contexte.keyCode);
+	console.log("code" + contexte.code);
+
+	if (contexte.code == "Escape") {
+		refAutomatiquement.checked = false;
+		toggleImage();
+	}
 
 }
 

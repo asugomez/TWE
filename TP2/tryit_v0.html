@@ -1,0 +1,67 @@
+<head>
+<title>Tryit V1</title>
+
+<style>
+.cadre, #banniere {
+	border: 1px solid black;
+	margin:2px;
+}
+#banniere {
+	text-align:center;
+	position:relative; 
+	/* devient un repère de positionnement */
+	height:30px;
+	line-height:30px;
+	vertical-align:center;
+}
+#banniere div {
+	/* sort du flux 
+	ne contraint plus les autres éléments 
+	se place dans le repère lié à son conteneur : plus récent ancêtre positionné */
+	position:absolute;
+	left:2px;
+}
+.cadre {
+	position:absolute;
+	top:34px;
+	bottom:1px;
+	padding:2px;
+}
+#cadreSaisie{
+	left:1px;
+	right:50.2%;
+}
+#saisie {
+	border:none;
+	resize:none;
+	width:100%;height:100%;
+}
+#cadreVisuel {
+	right:1px;
+	left:50.2%;
+}
+body{
+	padding:0; margin:0;
+}
+</style>
+</head>
+
+<body>
+
+<div id="banniere">
+	<div>Version 1</div>
+	<input type="button" value="Actualiser"/>
+	<input type="checkbox" id="cbAuto"/>
+	<label for="cbAuto">automatiquement</label>
+	<img src="ajaxLoader.gif" />
+</div>
+
+<div id="cadreSaisie" class="cadre">
+	<textarea id="saisie">Saisie ici</textarea>
+</div>
+
+<div id="cadreVisuel" class="cadre">
+	Visuel là
+</div>
+
+</body>

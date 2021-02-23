@@ -10,25 +10,27 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body onload="init();" onkeyup="annulerSaisieAuto();">
+<body onload="init();" onkeyup="annulerSaisieAuto(event);">
     <header>
         <h1> Try It Editor! </h1>
     </header>
+
+    <span id="infoBulle"> Message </span>
     
     <div id="col">
-        <div id="nom" class="col-xs-12">
+        <div id="nom" onmouseover="survoler();" class="col-xs-12">
             <div id="version">Version 1</div>
-            <input type="button" value="Actualiser" onclick="actualiser();"/>
+            <input type="button" value="Actualiser" onclick="actualiser();"  />
             <input type="checkbox" id="automatiquement" name="automatiquement" onchange="actualiser();" onclick="toggleImage();"/>
             <!-- le for permet d'appuyer sur automiquement et caser la case-->
-            <label for="automatiquement">automatiquemet</label> 
+            <label  for="automatiquement">automatiquemet</label> 
             <img id="imgLoad" src="ajaxLoader.gif"/>
         </div>
     </div>
     
     <div id="col">
         <div id="cadreSaisie" class="cadre" class="col-md-6" class="col-sm-12" class="col-xs-12">
-            <textarea id="saisie" onkeyup="saisir();">Saisie ici</textarea>
+            <textarea id="saisie" onkeyup="saisir();" >Saisie ici</textarea>
         </div>
 
         <div id="cadreVisuel" class="cadre" class="col-md-6" class="col-sm-12" class="col-xs-12">

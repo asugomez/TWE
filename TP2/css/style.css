@@ -71,3 +71,24 @@ h1{
 #imgLoad{
     display: none;
 }
+
+#infoBulle{
+    background-color: black;
+    color: white;
+    padding: 3px;
+    position: absolute;
+    cursor: help;
+    z-index: 10;
+    
+}
+
+.infoBulle:hover::after,
+.infoBulle:focus::after {
+  content: attr(aria-label);  /* on affiche aria-label */
+  position: absolute;
+  top: -2.4em;
+  left: 50%;
+  transform: translateX(-50%); /* on centre horizontalement  */
+  z-index: 1; /* pour s'afficher au dessus des éléments en position relative */
+  white-space: nowrap;  /* on interdit le retour à la ligne */
+}
