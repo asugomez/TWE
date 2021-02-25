@@ -23,6 +23,7 @@ function init(){
     refAutomatiquement = document.getElementById("automatiquement");
     refImgLoad = document.getElementById("imgLoad");
     refBulle = document.getElementById("infoBulle");
+    //lire l'état de la case (imposer un etat initia fixe) --> pour declancher la case (partie UX question 4eme version)
 }
 
 function actualiser(){
@@ -51,7 +52,7 @@ function saisir(){
     //V4: on veut desactiver ce traitment 
     if(refAutomatiquement.checked == true){
         //console.log("check true");
-        //actualiser();
+        actualiser();
     }
 
 }
