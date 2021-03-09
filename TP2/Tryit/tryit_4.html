@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Tryit Editor</title>
+	<style  type="text/css">
+	body {
+		margin:0;
+	}
+	#cadreBanniere {
+		text-align:center;
+		height:35px;
+		line-height:35px;
+		vertical-align:middle;
+		border:1px solid black;
+		padding:3px;
+		margin:3px;
+		/*left:0px;right:0px;top:0px;*/
+		position:relative;
+	}
+	#version {
+		position:absolute;
+		left:6px;top:3px;
+		height:35px;
+		line-height:35px;
+	}
+	.cadre {
+		border:1px solid black;
+		padding:3px;
+		position:absolute;
+		top:50px;
+		/* hauteur banniere : height+2xpadding+2xmargin*/
+		bottom:3px;
+	}
+	#cadreSaisie {
+		left:3px;right:50.3%;
+	}
+	#cadreVisuel {
+		right:3px;left:50.3%;
+	}
+	#txtSaisie {
+		width:99%; height:99%;
+		border:none;
+		resize:none;
+	}
+	#imgLoad {
+		display:none;
+	}
+
+	#popup {
+		background-color:black;
+		color:white; 
+		padding:5px;
+		position:absolute;
+		border:1px solid white;
+		border-radius: 4px;
+		display:none;
+		z-index: 10; 
+	}
+
+	</style>
+
+	<script>
+		var refTxtSaisie; 
+		var refCadreVisuel;
+		var refCbAuto; 
+		var refPopup; 
+		var refImgLoad; 
+
+		function init() {
+			refTxtSaisie = document.getElementById("txtSaisie");
+			refCadreVisuel = document.getElementById("cadreVisuel");
+			refCbAuto = document.getElementById("cbAuto");
+			refPopup = document.getElementById("popup");
+			refImgLoad = document.getElementById("imgLoad");
+
+			//On garantit la cohérence de l'interface 
+			// EN imposant l'état de la case à cocher 
+			refCbAuto.checked = false;
+
+			console.log("init");
+		}
+		function actualiser(){
+			console.log("actualiser");
+			// récupérer contenu saisi
+			// balise textarea => .value 
+			var contenu = refTxtSaisie.value;
+
+			// le recopier dans cadre visuel  
+			// balise div => innerHTML 
+			refCadreVisuel.innerHTML = contenu;
+		}
+
+
+		var observateur; 
+		function appuyer(contexte) {
+			// console.log("Appui sur " + contexte.which);
+			observateur = contexte; 
+			//key keyCode which code représentent la touche appuyée 
+			// ESC <=> 27 
+			if (contexte.which == 27) {
+				refCbAuto.checked = false;
+				actuPeriodique();
+				// Quand on annule, on utilise les élements du visuel pour les réafficher dans le cadre 
+				refTxtSaisie.value = refCadreVisuel.innerHTML;
+			}
+		}
+
+
+	function popin(contexte) {
+		// console.log("mouseover sur " + contexte.target.id);
+		// Cette variable est une référence 
+		// En fonction de l'id de l'élémént survolé : 
+		// Message ? 
+
+		// console.log("X=" + contexte.clientX);
+		// console.log("Y=" + contexte.clientY);
+		
+		var info = false;
+		switch(contexte.target.id) {
+			//case "version": info = ""; break;
+			//case "cadreBanniere" : info = ""; break;
+			case "btnAuto" : info = "Cliquer pour actualiser"; break;
+			case "cbAuto" : info = "Cocher pour actualiser automatiquement"; break;
+			case "lblAuto" : info = "Cliquer pour cocher"; break;
+			default : info = false;
+		}
+
+		if (info) {
+			// Remplir le popup 
+			refPopup.innerHTML = info;
+
+			// Positionner le popup à proximité du curseur de la souris 
+			refPopup.style.top = (contexte.clientY+10)+"px"; 
+						
+			if (contexte.clientX< window.innerWidth/2) {
+				// afficher popup à droite de la souris
+				// si la souris est plutôt à gauche de l'écran
+				refPopup.style.left = (contexte.clientX+10)+"px"; 
+				refPopup.style.right ="auto";
+			} else {
+				refPopup.style.right = (window.innerWidth-contexte.clientX-10)+"px";
+				refPopup.style.left="auto";
+			}
+
+			// Afficher le popup 
+			refPopup.style.display = "block";
+			window.setTimeout(popout, 2000); // fonction de rappel "callback"
+		}
+	}
+	function popout() {
+		// console.log("popout");
+		refPopup.style.display = "none";
+	}
+
+	// idP =  window.setInterval(fn,delai) 
+	// clearInterval(idP)
+
+	var idP = false; 
+
+	function actuPeriodique() {
+
+		// tester l'état de la case à cocher 
+		
+		if (refCbAuto.checked) {
+			console.log("initialisation actuPeriodique");
+			// Si case est cochée, préparer les appels périodiques
+			idP =  window.setInterval(actualiser,5000); 
+			refImgLoad.style.display = "inline-block";
+
+		} else {
+			// SInon, annuler les éventuels appels périodiques
+			if (idP) {
+				console.log("annulation actuPeriodique");
+				window.clearInterval(idP); 
+				idP = false;
+				refImgLoad.style.display = "none";
+			}
+		}
+		
+	}
+	</script>
+</head>
+
+<body onload="init();" onkeyup="appuyer(event);">
+
+<div id="popup">ceci est un popup</div>
+
+<div id="cadreBanniere" onmouseover="popin(event);"
+			onmouseout="popout();" >
+	<div id="version">Version 4</div>
+	<input id="btnAuto" type="button" 
+			value="Actualiser" 
+			onclick="actualiser();"/>
+
+	<input id="cbAuto" type="checkbox" onclick="actualiser();actuPeriodique();"/>
+	<label id="lblAuto" for="cbAuto" >automatiquement</label>
+	<img alt="Image de chargement" id="imgLoad" src="ajaxLoader2.gif" />
+</div>
+<div id="cadreSaisie" class="cadre">
+	<textarea cols="20" rows="20" id="txtSaisie">Cadre saisie</textarea>
+</div>
+<div id="cadreVisuel" class="cadre">Cadre visuel</div>
+
+
+</body>
+</html>

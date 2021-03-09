@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Tryit Editor</title>
+	<style  type="text/css">
+	body {
+		margin:0;
+	}
+	#cadreBanniere {
+		text-align:center;
+		height:35px;
+		line-height:35px;
+		vertical-align:middle;
+		border:1px solid black;
+		padding:3px;
+		margin:3px;
+		/*left:0px;right:0px;top:0px;*/
+		position:relative;
+	}
+	#version {
+		position:absolute;
+		left:6px;top:3px;
+		height:35px;
+		line-height:35px;
+	}
+	.cadre {
+		border:1px solid black;
+		padding:3px;
+		position:absolute;
+		top:50px;
+		/* hauteur banniere : height+2xpadding+2xmargin*/
+		bottom:3px;
+	}
+	#cadreSaisie {
+		left:3px;right:50.3%;
+	}
+	#cadreVisuel {
+		right:3px;left:50.3%;
+	}
+	#txtSaisie {
+		width:99%; height:99%;
+		border:none;
+		resize:none;
+	}
+	#imgLoad {
+		display:none;
+	}
+
+/*
+	#popup {
+		background-color:black;
+		color:white; 
+		padding:5px;
+		position:absolute;
+		border:1px solid white;
+		border-radius: 4px;
+		display:none;
+		z-index: 10; 
+	}
+*/
+
+	.popable {
+		display:inline;
+		position:relative;
+	} 
+		
+	.popstr {
+		display:none;
+		background-color:black;
+		color:white; 
+		padding:5px;
+		border:1px solid white;
+		border-radius: 4px;
+		z-index: 10; 
+		position:absolute;
+		top:30px;
+		left:0px;
+	}
+
+	/* TODO: garantir que la largeur du popup 
+		sera toujours de la taille du texte qu'il contient */
+
+	.popable:hover .popstr {
+		display:inline-block;
+	}
+
+	#edition {
+		display:none;
+		position:absolute;
+		right:6px;top:3px;
+		height:35px;
+		line-height:35px;
+	}
+
+	</style>
+
+	<script>
+		var refTxtSaisie; 
+		var refCadreVisuel;
+		var refCbAuto; 
+		var refImgLoad; 
+		var refBtnAuto; 
+		var refEdition; 
+
+		var cache = [""];
+		var mode = "manuel";
+		var iCache = 0; // "indice"
+
+/*		cache[0] vaut ""
+		cache[1] = ...
+		cache.push("nouvel elt")
+		last = cache.pop()
+		cache.length
+*/
+
+		function init() {
+			refTxtSaisie = document.getElementById("txtSaisie");
+			refCadreVisuel = document.getElementById("cadreVisuel");
+			refCbAuto = document.getElementById("cbAuto");
+			refImgLoad = document.getElementById("imgLoad");
+			refBtnAuto = document.getElementById("btnAuto");
+			refEdition = document.getElementById("edition");
+
+			//On garantit la cohérence de l'interface 
+			// EN imposant l'état de la case à cocher 
+			refCbAuto.checked = false;
+
+			console.log("init");
+		}
+
+		function actualiser() {
+			console.log("actualiser");
+			// récupérer contenu saisi
+			// balise textarea => .value 
+			var contenu = refTxtSaisie.value;
+
+			// le recopier dans cadre visuel  
+			// balise div => innerHTML 
+			refCadreVisuel.innerHTML = contenu;
+		}
+
+		function appuiBtnAuto(){
+			console.log("appuiBtnAuto");
+			var contenu = refTxtSaisie.value;
+		
+			// tous les modes : met à jour 
+			if (mode == "manuel") {
+				actualiser(); 
+			}
+
+			// mode automatique : sauvegarder 
+			if (mode =="auto") {
+				// supprimer tous les élements situés après l'indice i+1
+				cache.splice(iCache+1);
+				//Insérer le contenu dans le cache 
+				// à l'indice i+1, 
+				// On sauvegarde seulement si la valeur actuelle est différente de celle de cache 
+				if (contenu != cache[iCache]) { 
+					cache.push(contenu);
+					iCache++; 
+				}
+			}
+
+		}
+
+		function undo() {
+			// lire le contenu sauvegardé à l'étape précédente
+			// l'afficher dans cadre visuel 
+			// => besoin d'une variable qui dénote la position 
+			// de l'affichage vis-à-vis du cache 
+
+			if (iCache ==0) return; 		
+
+			// récupérer le texte précédent 
+			var lastContenu = cache[iCache-1]; 
+			// afficher ce texte 
+			refCadreVisuel.innerHTML = lastContenu; 
+			refTxtSaisie.value = lastContenu; 
+			// modifier l'indice de la position courante du cache 	
+			iCache--; 
+		}
+
+// TODO: changer l'apparence des flèches lorsque iCache est au début ou à la fin de la liste des versions 
+
+		function redo() {
+
+			if (iCache == cache.length-1) return;
+
+			var nextContenu = cache[iCache+1];
+			refCadreVisuel.innerHTML = nextContenu;	
+			refTxtSaisie.value = nextContenu; 
+			iCache++;
+		}
+		
+
+
+		var observateur; 
+		function appuyer(contexte) {
+			console.log(contexte);
+			console.log("Appui sur " + contexte.which);
+			observateur = contexte; 
+			//key keyCode which code représentent la touche appuyée 
+			// ESC <=> 27 
+			if (contexte.which == 27) {
+				refCbAuto.checked = false;
+				actuPeriodique();
+				// Quand on annule, on utilise les élements du visuel pour les réafficher dans le cadre 
+				refTxtSaisie.value = refCadreVisuel.innerHTML;
+			}
+
+			// NB : cltrkey, shiftkey, altkey 
+			// sont des propriétés du contexte qui permettent 
+			// de détecter des COMBINAISONS de touches 
+
+			if (mode == "auto") {
+				if (contexte.which == 37) {
+					// fleche gauche
+					undo();
+				}
+				if (contexte.which == 39) {
+					// fleche droite
+					redo();
+				}
+			}
+			
+		}
+
+	var idP = false; 
+
+	function clickCbAuto() {
+
+		// tester l'état de la case à cocher 
+		
+		if (refCbAuto.checked) {
+			// mode <- automatique
+			mode = "auto"; 
+			refBtnAuto.value = "Sauvegarder";
+			refEdition.style.display = "block";
+			/*
+			cache = [""]; 
+			iCache =0;
+			appuiBtnAuto();
+			*/
+			/*cache = [refTxtSaisie.value];
+			iCache = 0;*/
+			cache = []; 
+			iCache =-1;
+			appuiBtnAuto();
+
+			console.log("initialisation actuPeriodique");
+			// Si case est cochée, préparer les appels périodiques
+			idP =  window.setInterval(actualiser,5000); 
+			refImgLoad.style.display = "inline-block";
+
+		} else {
+			// mode <- manuel
+			mode = "manuel"; 
+			refBtnAuto.value = "Actualiser";
+			refEdition.style.display = "none";
+
+			// SInon, annuler les éventuels appels périodiques
+			if (idP) {
+				console.log("annulation actuPeriodique");
+				window.clearInterval(idP); 
+				idP = false;
+				refImgLoad.style.display = "none";
+			}
+		}
+		
+	}
+	</script>
+</head>
+
+<body onload="init();" onkeyup="appuyer(event);">
+
+<div id="cadreBanniere">
+	<div id="version">Version 6</div>
+
+<div class="popable">
+	<input id="btnAuto" type="button" 
+			value="Actualiser" 
+			onclick="appuiBtnAuto();" />
+	<div class="popstr">
+		Cocher pour actualiser automatiquement
+	</div>
+</div>
+
+<div class="popable">
+	<input id="cbAuto" type="checkbox" 		
+		onclick="actualiser();clickCbAuto();" />
+	<div class="popstr">
+		Cocher pour actualiser automatiquement
+	</div>
+</div>
+
+<div class="popable">
+		<label id="lblAuto" for="cbAuto" >automatiquement
+		</label>
+	<div class="popstr">
+		Cliquer pour cocher
+	</div>
+</div>
+
+<div id="edition">
+	<input id="btnArrieve" type="button" 
+			value="<-" 
+			onclick="undo();" />
+	<input id="btnAvant" type="button" 
+			value="->" 
+			onclick="redo();" />
+</div>
+	
+	<img alt="Image de chargement" id="imgLoad" src="ajaxLoader2.gif" />
+</div>
+<div id="cadreSaisie" class="cadre">
+	<textarea cols="20" rows="20" id="txtSaisie"></textarea>
+</div>
+<div id="cadreVisuel" class="cadre"></div>
+
+
+</body>
+</html>

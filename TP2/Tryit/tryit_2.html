@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Tryit Editor</title>
+	<style  type="text/css">
+	body {
+		margin:0;
+	}
+	#cadreBanniere {
+		text-align:center;
+		height:35px;
+		line-height:35px;
+		vertical-align:middle;
+		border:1px solid black;
+		padding:3px;
+		margin:3px;
+		/*left:0px;right:0px;top:0px;*/
+		position:relative;
+	}
+	#version {
+		position:absolute;
+		left:6px;top:3px;
+		height:35px;
+		line-height:35px;
+	}
+	.cadre {
+		border:1px solid black;
+		padding:3px;
+		position:absolute;
+		top:50px;
+		/* hauteur banniere : height+2xpadding+2xmargin*/
+		bottom:3px;
+	}
+	#cadreSaisie {
+		left:3px;right:50.3%;
+	}
+	#cadreVisuel {
+		right:3px;left:50.3%;
+	}
+	#txtSaisie {
+		width:99%; height:99%;
+		border:none;
+		resize:none;
+	}
+	#imgLoad {
+		display:none;
+	}
+
+	</style>
+
+	<script>
+		var refTxtSaisie; 
+		var refCadreVisuel;
+		var refCbAuto; 
+
+		function init() {
+			refTxtSaisie = document.getElementById("txtSaisie");
+			refCadreVisuel = document.getElementById("cadreVisuel");
+			refCbAuto = document.getElementById("cbAuto");
+			console.log("init");
+		}
+		function actualiser(){
+			console.log("actualiser");
+			// récupérer contenu saisi
+			// balise textarea => .value 
+			var contenu = refTxtSaisie.value;
+
+			// le recopier dans cadre visuel  
+			// balise div => innerHTML 
+			refCadreVisuel.innerHTML = contenu;
+		}
+
+		function saisir() {
+			console.log("saisir keyup saisie =" + refTxtSaisie.value);
+			// Si case est cochée, alors actualiser() 
+			if (refCbAuto.checked) {
+				actualiser();
+			}
+		}
+
+		// keydown : touche clavier appuyée, pas encore relachée, le caractère n'est pas encore dans le champ du navigateur
+
+		// keyup : touche relachée, le caractère est dans le champ 
+
+		// keypress : appui long sur la touche 
+	
+		// change : le navigateur ne détecte les chamgements que lorsqu'il perd le focus sur le champ modifié 
+
+		function saisird() {
+			console.log("saisir keydown saisie " + refTxtSaisie.value); 
+		}
+
+		function saisirc() {
+			console.log("saisir change saisie " + refTxtSaisie.value); 
+		}
+
+		var observateur; 
+		function appuyer(contexte) {
+			console.log("Appui sur " + contexte.which);
+			observateur = contexte; 
+			//key keyCode which code représentent la touche appuyée 
+			// ESC <=> 27 
+			if (contexte.which == 27) {
+				refCbAuto.checked = false;
+			}
+		}
+	</script>
+</head>
+
+<body onload="init();" onkeyup="appuyer(event);">
+
+
+<div id="cadreBanniere">
+	<div id="version">Version 2</div>
+	<input type="button" value="Actualiser" onclick="actualiser();"/>
+	<input id="cbAuto" type="checkbox" onclick="actualiser();"/>
+	<label for="cbAuto" >automatiquement</label>
+	<img alt="Image de chargement" id="imgLoad" src="ajaxLoader2.gif" />
+</div>
+<div id="cadreSaisie" class="cadre">
+	<textarea cols="20" rows="20" id="txtSaisie" onkeyup="saisir();" onkeydown="saisird();" onchange="saisirc();" >Cadre saisie</textarea>
+</div>
+<div id="cadreVisuel" class="cadre">Cadre visuel</div>
+
+
+</body>
+</html>

@@ -1,0 +1,445 @@
+<head>
+<title>Tryit V6</title>
+
+<style>
+.cadre, #banniere {
+	border: 1px solid black;
+	margin:2px;
+}
+#banniere {
+	text-align:center;
+	position:relative; 
+	/* devient un repère de positionnement */
+	height:30px;
+	line-height:30px;
+	vertical-align:middle;
+}
+/*#banniere div:first-child*/ 
+#version{
+	/* sort du flux 
+	ne contraint plus les autres éléments 
+	se place dans le repère lié à son conteneur : plus récent ancêtre positionné */
+	position:absolute;
+	left:2px;
+}
+.cadre {
+	position:absolute;
+	top:34px;
+	bottom:1px;
+	padding:2px;
+}
+#cadreSaisie{
+	left:1px;
+	right:50.2%;
+}
+#saisie {
+	border:none;
+	resize:none;
+	width:100%;height:100%;
+}
+#cadreVisuel {
+	right:1px;
+	left:50.2%;
+}
+body{
+	padding:0; margin:0;
+}
+#imgLoad {
+	display:none;
+}
+
+/* info-bulle : présentation */
+
+#infoBulle {
+	background-color:black;
+	color:white;
+	padding:3px;
+	z-index: 10; /*Comment s’assurer que l’info-bulle sera toujours au premier plan du navigateur*/
+	position:absolute; 
+	display:none;
+}
+
+
+/* info-bulle en pur HTML/CSS : 
+<div class="popable">
+		<input onclick="actualiser();" id="btnActu" type="button" value="Actualiser"/>
+		<div class="popstr">
+			Cocher pour actualiser automatiquement
+		</div>
+	</div>
+*/
+
+.popable {
+	display:inline;
+	position:relative; /*devient un conteneur : repère de positionnement pour ses enfants */
+}
+
+.popstr {
+	display:none ;
+	position:absolute; /* quel conteneur ? */
+	left:0px;top:40px;
+	background-color:black;
+	color:white;
+	padding:3px;
+	z-index: 10;
+	border: 2px solid white;
+}
+
+.popable:hover .popstr {
+	display:block ;
+}
+
+</style>
+
+<script>
+
+// le navigateur interprète le js 
+// à la volée : au fur et à mesure de sa lecture du code de la page (de haut en bas)
+
+// bonne pratique : 
+// déclarer TOUTES les variables 
+// et les initialiser 
+var refSaisie = null; 
+var refVisuel = null; 
+var refCbAuto = null; 
+var refImgLoad = null;
+var refBulle = null;  
+
+var lastTO = false; 
+//  Comment connaître l'état de la case à cocher ?
+// propriété checked <=> état de la case à cocher 
+
+var lastTP = false; 
+
+function init() {
+	console.log("init: fin chargement page");
+	// Attention à la portée des variables : 
+	// une variable déclarée avec le mot-clé 'var'
+	// est locale à cette fonction  
+	refSaisie = document.getElementById("saisie");
+	refVisuel = document.getElementById("cadreVisuel");
+	refCbAuto = document.getElementById("cbAuto");
+	refImgLoad = document.getElementById("imgLoad");
+	refBulle = document.getElementById("infoBulle");
+}
+
+function actualiser() {
+	// utiliser des verbes pour les noms des fonctions 
+	console.log("actualiser");
+	// récupérer le contenu du textarea #saisie
+	var contenu = refSaisie.value; 
+	console.log("contenu : " + contenu);
+	// écrire ce contenu dans le #cadreVisuel
+	refVisuel.innerHTML = contenu;
+
+	ajouter(contenu); 
+}
+
+function saisir() {
+	console.log("saisir");
+	// si la case est cochée : on actualise immédiatement
+	// V4 : on désactive ce traitement 
+	if (refCbAuto.checked) {
+		// Alors actualiser() 
+		// actualiser();
+	}  
+}
+
+/*
+mise à jour à chaque modification du champ textarea. 
+Nous utiliserons l'événement keyup.
+keyup : l'utilisateur a appuyé sur une touche et vient de relacher cette touche : le nouveau caractère a été pris en compte par le navigateur
+keydown : se déclenche quand la touche est appuyée AVANT que le caractère ne soit inscrit dans le champ considéré 
+keypress : gère les appuis longs 
+
+● Pourquoi l'événement onchange n'est pas conseillé pour détecter les changements ?
+=> l'événement change n'est déclenché que lors de la perte du focus sur le champ considéré
+
+User Experience / ergonomie : attention aux conventions 
+● [UX] Vérifier que la mise à jour se déclenche immédiatement au moment du clic sur la case ;
+*/
+
+
+// afficher l'Image de chargement lors des mises à jour automatiques 
+
+function toggleImage() {
+	// inverser l'état de visibilité de l'image 
+	if (refCbAuto.checked) 
+		refImgLoad.style.display = "inline";
+	else 
+		refImgLoad.style.display = "none";
+}
+
+/*
+On décochera la case en utilisant la touche « ESC ».
+// cet appui peut se produire alors que le focus est n'importe où => on ne va pas placer onkeyup juste sur le cadre de saisie
+=> on le met dans body, car il existe un système de propogation d'événements dans le navigateur  
+*/
+
+function annulerSaisieAuto(contexte) {
+	//console.log("annulerSaisieAuto");
+	//comment savoir quelle est la touche qui a été appuyée ?
+	//console.log(contexte);
+
+	// https://caniuse.com permet de trouver quelle propriété est la plus standard
+	//console.log("which" + contexte.which);
+	//console.log("keyCode" + contexte.keyCode);
+	//console.log("code" + contexte.code);
+
+	if (contexte.code == "Escape") {
+		refCbAuto.checked = false;
+		toggleImage();
+		actualiserPeriodiquement();
+	}
+}
+
+/*
+4ème version : Nous souhaitons que les mises à jour automatiques se déroulent à intervalles réguliers, en utilisant la méthode window.setInterval.
+● [UX] On informera l'utilisateur que quelquechose se passe en arrière plan, en affichant une image de chargement (que l'on peut récupérer sur le site http://www.ajaxload.info/) ou dans le répertoire fourni sur moodle.
+● On désactivera la mise à jour automatique en utilisant la touche « ESC ».
+● [UX] Lorsque l’on rafraîchit la fenêtre du navigateur alors que la case était cochée, elle reste cochée. Mettre en place ce qu’il faut pour que dans ce cas l’actualisation périodique se poursuive.
+*/
+
+function survoler(contexte) {
+	//console.log(contexte);
+	// clientX, clientY : coordonnées souris sur l'écran
+	// target : référence à l'élément source de l'événement
+
+	// quel est l'élément survolé ? // => en déduire le message 
+	switch(contexte.target.id) {
+		case "btnActu": 
+			refBulle.innerHTML = "cliquer pour actualiser";
+			break; 
+		case "lblAuto": 
+			refBulle.innerHTML = "cliquer pour cocher";
+			break; 
+		case "cbAuto": 
+			refBulle.innerHTML = "cocher pour actualiser automatiquement";
+			break; 
+		default : 
+			//refBulle.innerHTML = ""; 
+			return; 
+	}
+	// quelle est la position de la souris ? 
+	// => en déduire la position de l'info-bulle 
+	console.log("X:" + contexte.clientX + " Y: " + contexte.clientY);
+	refBulle.style.top = (parseInt(contexte.clientY)+15) +"px";
+	
+	// attention ! l'opérateur + est à la fois la concaténation
+	// et la somme 
+
+	// window.innerWidth
+	if (contexte.clientX < (window.innerWidth/2)) {
+		// bulle à droite
+		refBulle.style.left =  contexte.clientX;
+		refBulle.style.right = ""; 
+	} else {
+		// bulle à gauche 
+		refBulle.style.right = window.innerWidth-contexte.clientX;
+		refBulle.style.left = ""; 
+	}
+
+	// afficher l'info-bulle
+	// if (refBulle.innerHTML != "") 
+	refBulle.style.display = "inline";
+
+	// il faut cacher la bulle dans deux secondes 
+	// Cf. window.setTimeout
+	if (lastTO != false) clearTimeout(lastTO); 
+	lastTO = window.setTimeout(cacherBulle,2000);
+	// on passe la fonction cacherBulle à une autre
+	// "fonction de rappel", fonction callback 
+}
+
+function cacherBulle(){
+	refBulle.style.display = "none";
+}
+
+function actualiserPeriodiquement(){
+	actualiser();
+	// déclencher des actualisations periodiques, 
+	// toutes les 5s 
+	if (refCbAuto.checked) {
+		if (lastTP != false) clearInterval(lastTP);	
+		lastTP = window.setInterval(actualiser, 2000);
+	} else {
+		if (lastTP != false) clearInterval(lastTP);
+		lastTP = false; 
+	}
+}
+
+/*
+6ème version : Nous souhaitons “versionner” les différentes saisies de
+l’utilisateur à chaque appui sur le bouton “Actualiser”, et permettre des retours
+avant et arrière pour retrouver les textes saisis précédemment. Proposez une
+solution de stockage de ces textes en cache dans votre navigateur, et ajoutez des
+flèches et des raccourcis clavier permettant de mettre en oeuvre ce mécanisme.
+
+
+Structure : flèches gauche et droite 
+
+Information (interaction) : 
+bouton actualiser déclenche l'enregistrement d'une nouvelle version 
+Comment stocker l'information à utiliser ? 
+
+
+pile => la bâtir à partir d'une structure de tableau 
+
+Cf. Array js : https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Array
+
+var tab = ["valeur initiale"];
+tab.length <=> taille 
+tab.push("autre valeur") 
+
+V1 : ajouter flèches 
+V2 : enregistrer les textes successifs dans la tableau 
+V3 : se déplacer dans les versions (afficher le nombre d'éléments enregistrés et le numéro de l'élément courant)
+V4 : que se passe-t-il si on appuie sur "actualiser" alors que l'on était pas à la dernière version disponible ? 
+
+// TODO : cacher les flèches non pertinentes 
+// TODO : ne pas enregister une nouvelle version si le texte n'a pas changé 
+// TODO : lors des actualisations automatiques, enregistrer des versions si elles ont changé 
+
+*/
+
+var historique = [""];
+var curseur = 0;
+
+function reculer() {
+	// récupérer le texte précédent 
+	if (curseur==0) return;
+	var contenu = historique[curseur-1]; 
+	// afficher le texte à droite et à gauche : manuellement 
+	refSaisie.value = contenu; 
+	refVisuel.innerHTML = contenu; 
+	curseur--;
+
+	showHisto(); 
+}
+function avancer() {
+	// récupérer le texte suivant
+	if (curseur==(historique.length-1)) return;
+
+	var contenu = historique[curseur+1]; 
+	// afficher le texte à droite et à gauche : manuellement
+	refSaisie.value = contenu; 
+	refVisuel.innerHTML = contenu; 
+	curseur++;
+
+	showHisto();
+}
+
+function ajouter(contenu){
+	// ajoute le contenu du texte saisi dans l'historique
+	// ATTENTION : juste après la position actuelle du curseur
+
+	// Si on était au bout de l'historique 
+	// Si le curseur n'est pas à la fin de l'historique
+	// On tronque l'historique restant 
+	if (curseur!=(historique.length-1)) {
+		console.log("historique "+ historique);
+		historique.splice(curseur+1); 
+		// https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/Array/splice
+	}
+
+	// PUIS on ajoute (seulement si le contenu a effectivement changé)
+
+	if(contenu != historique[historique.length]){
+		console.log("estoy jajajajaja");
+		historique.push(contenu);
+		curseur++;
+
+	}
+
+
+	showHisto(); 
+}
+
+function showHisto() {
+	console.log("showhisto");
+	console.log("curseur:" + curseur + " (" + historique.length+" elts)");
+	var i; 
+	for(i=0;i<historique.length;i++) {
+		if (curseur == i) 
+			console.log("=> H["+i+"] : \"" + historique[i] +"\"");
+		else 
+			console.log("H["+i+"] : \"" + historique[i] +"\"");
+	}
+}
+</script>
+
+</head>
+
+<!-- 
+
+5ème version : Quel attribut peut-on utiliser pour créer des info-bulles en pur HTML ? Nous souhaitons que les info-bulles soient entièrement réalisées en CSS. Proposez la feuille de style appropriée, sachant que nous souhaitons employer la structure suivante :
+
+(...)
+<div class="popable">
+	<input type="button" value="Actualiser" />
+	<div class="popstr">
+		Cocher pour actualiser automatiquement
+	</div>
+</div>
+(...)
+
+STRUCTURE ? 
+PRESENTATION : :hover
+--> 
+
+<body onload="init();" onkeyup="annulerSaisieAuto(event);">
+
+<!-- info-bulle : structure : -->
+<span id="infoBulle">Message</span>
+
+<div id="banniere">
+	<div id="version" title="Ceci est le numéro de version">Version 6</div>
+
+	<div class="popable">
+		<input onclick="reculer();" type="button" value="<-"/>
+		<div class="popstr">
+			Cliquer pour revenir à la version précédente
+		</div>
+	</div>
+
+	<div class="popable">
+		<input onclick="actualiser();" id="btnActu" type="button" value="Actualiser"/>
+		<div class="popstr">
+			Cliquer pour actualiser
+		</div>
+	</div>
+
+	<div class="popable">
+		<input onclick="avancer();" type="button" value="->"/>
+		<div class="popstr">
+			Cliquer pour avancer à la version suivante
+		</div>
+	</div>
+
+	<div class="popable">
+		<input type="checkbox" id="cbAuto" onclick="actualiserPeriodiquement();toggleImage();"/>
+		<div class="popstr">
+			Cocher pour actualiser automatiquement
+		</div>
+	</div>
+
+	<div class="popable">
+		<label id="lblAuto" for="cbAuto">automatiquement</label>
+		<div class="popstr">
+			Cliquer pour cocher
+		</div>
+	</div>
+
+	<img id="imgLoad" src="ajaxLoader.gif" />
+</div>
+
+<div id="cadreSaisie" class="cadre">
+	<textarea placeholder="ecrire votre texte ici" id="saisie" onkeyup="saisir();"></textarea>
+</div>
+
+<div id="cadreVisuel" class="cadre">le visuel s'affichera à cet endroit</div>
+
+
+
+
+</body>

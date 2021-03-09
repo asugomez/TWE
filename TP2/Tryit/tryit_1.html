@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Tryit Editor</title>
+	<style  type="text/css">
+	body {
+		margin:0;
+	}
+	#cadreBanniere {
+		text-align:center;
+		height:35px;
+		line-height:35px;
+		vertical-align:middle;
+		border:1px solid black;
+		padding:3px;
+		margin:3px;
+		/*left:0px;right:0px;top:0px;*/
+		position:relative;
+	}
+	#version {
+		position:absolute;
+		left:6px;top:3px;
+		height:35px;
+		line-height:35px;
+	}
+	.cadre {
+		border:1px solid black;
+		padding:3px;
+		position:absolute;
+		top:50px;
+		/* hauteur banniere : height+2xpadding+2xmargin*/
+		bottom:3px;
+	}
+	#cadreSaisie {
+		left:3px;right:50.3%;
+	}
+	#cadreVisuel {
+		right:3px;left:50.3%;
+	}
+	#txtSaisie {
+		width:99%; height:99%;
+		border:none;
+		resize:none;
+	}
+	#imgLoad {
+		display:none;
+	}
+
+	</style>
+
+	<script>
+		var refTxtSaisie; 
+		var refCadreVisuel;
+
+		function init() {
+			refTxtSaisie = document.getElementById("txtSaisie");
+			refCadreVisuel = document.getElementById("cadreVisuel");
+			console.log("init");
+		}
+		function actualiser(){
+			console.log("actualiser");
+			// récupérer contenu saisi
+			// balise textarea => .value 
+			var contenu = refTxtSaisie.value;
+
+			// le recopier dans cadre visuel  
+			// balise div => innerHTML 
+			refCadreVisuel.innerHTML = contenu;
+		}
+	</script>
+</head>
+
+<body onload="init();">
+<!-- structure 
+camelCase = premierMotEnMinusculeAutresMotsCommencentParMajuscule
+snake_case =
+mots_en_minuscules_separes_par_underscore
+Eviter les nommages utilisant des tirets !  
+--> 
+
+<div id="cadreBanniere">
+	<div id="version">Version 1</div>
+	<input type="button" value="Actualiser" onclick="actualiser();"/>
+	<input id="cbAuto" type="checkbox" />
+	<label for="cbAuto" >automatiquement</label>
+	<img alt="Image de chargement" id="imgLoad" src="ajaxLoader2.gif" />
+</div>
+<div id="cadreSaisie" class="cadre">
+	<textarea cols="20" rows="20" id="txtSaisie">Cadre saisie</textarea>
+</div>
+<div id="cadreVisuel" class="cadre">Cadre visuel</div>
+
+
+</body>
+</html>

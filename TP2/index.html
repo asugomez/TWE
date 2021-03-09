@@ -11,6 +11,7 @@
 </head>
 
 <body onload="init();" onkeyup="annulerSaisieAuto(event);">
+
     <header>
         <h1> Try It Editor! </h1>
     </header>
@@ -19,25 +20,61 @@
     
     <div id="col">
         <!-- onmouseout est le contraire à onmouseover-->
-        <div id="nom" onmouseover="survoler(event);"  onmouseout="cacherBulle();" class="col-xs-12">
-            <div id="version">Version 1</div>
+        <div class="col-xs-12" id="nom"> <!-- onmouseover="survoler(event);"  onmouseout="cacherBulle();"> -->
+            <div id="version">Version 4</div>
             
-            <input type="button" id="buttonActu" value="Actualiser" onclick="actualiserPeriodiquement();" />
-            <input type="checkbox" id="automatiquement" name="automatiquement" onchange="actualiser();" onclick="toggleImage();"/>
-            <!-- le for permet d'appuyer sur automiquement et caser la case-->
-            <label  id="labelAutour" for="automatiquement">automatiquemet</label> 
-            <img id="imgLoad" src="ajaxLoader.gif"/>
+            <!-- history -->
+            <div id="flecheID" class="popable" >
+                <input type="button" id="fleche" class="arrow-right" onclick="reculer();" value="<-"/> 
+                <div class="popstr">
+                    Cliquer pour revenir
+                </div>
+
+            </div>
+            
+            <div class="popable">
+                <input type="button" id="buttonActu" value="Actualiser" onclick="actualiser();" />
+                <div class="popstr">
+                    Cliquer pour actualiser automatiquement
+                </div>
+
+            </div>
+
+            <!-- history-->
+            <div id="flecheID2" class="popable">
+                <input type="button" id="fleche" class="arrow-right" onclick="avancer();" value="->"/> 
+                <div class="popstr">
+                    Cliquer pour avancer  
+                </div>
+            </div>
+
+            
+            <div class="popable">
+                <input type="checkbox" id="automatiquement" name="automatiquement" onclick="actualiser();actualiserPeriodiquement();" />
+                <div class="popstr">
+                    Cocher pour actualiser automatiquement
+                </div>
+            </div>
+            <div class="popable">
+                <!-- le for permet d'appuyer sur automiquement et caser la case-->
+                <label  id="labelAutour" for="automatiquement">automatiquemet</label> 
+                <div class="popstr">
+                    Cliquer pour cocher
+                </div>
+                <img id="imgLoad" src="ajaxLoader.gif"/>
+            </div>
+            
         </div>
     </div>
     
     <div id="col">
         <div id="cadreSaisie" class="cadre col-md-6 col-sm-12 col-xs-12">
-            <textarea id="saisie" onkeyup="saisir();">Saisie ici</textarea>
+            <textarea placeholder="Ecrire votre texte ici" id="saisie"></textarea>
         </div>
 
         <div id="cadreVisuel" class="cadre col-md-6 col-sm-12 col-xs-12">
             <img id="imgLoad" src="ajaxLoader.gif"/>
-            <p> interieur du div edition</p>
+            <p> </p>
         </div>
     </div>
 
