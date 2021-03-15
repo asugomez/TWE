@@ -1,4 +1,8 @@
 <?php
+/**
+ * fichier à mettre dans le dossier www
+ */
+
 session_start();
 
 /*
@@ -16,10 +20,21 @@ Les formulaires de toutes les vues générées enverront leurs données vers la 
 	// qui contient les balises de structure de la page, le logo, etc. 
 	// Le formulaire de recherche ainsi que le lien de connexion 
 	// si l'utilisateur n'est pas connecté 
+
+	// charge le header
 	include("templates/header.php");
 
-	// on récupère le paramètre view éventuel 
+	// on récupère le paramètre view éventuel  (la foncition se trouve dans la librairie maLibUtils.php)
 	$view = valider("view"); 
+
+	//la fonction valider corresponde a ça:
+
+	/*
+	if(isset($_GET["view"]) && ($_GET["view"] != ""))
+		$view= $_GET["view"];
+	else  
+		$view =false;
+	*/
 
 	// S'il est vide, on charge la vue accueil par défaut
 	if (!$view) $view = "accueil"; 
@@ -38,11 +53,18 @@ Les formulaires de toutes les vues générées enverront leurs données vers la 
 
 		case "users" : 
 			include("templates/users.php");
+	
+		case "conversations":
+		case "conversation":
+			include("templates/conversations.php");
 		break;
 
 		default : // si le template correspondant à l'argument existe, on l'affiche
 			if (file_exists("templates/$view.php"))
 				include("templates/$view.php");
+			//quand il n'exite pas le fichier
+			else
+				include("templates/error.php");
 
 	}
 

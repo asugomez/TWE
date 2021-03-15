@@ -18,7 +18,7 @@ if (basename($_SERVER["PHP_SELF"]) != "index.php")
 
 <div id="corps">
 
-<h1>Accueil</h1>
+<h1>Accueil 2021</h1>
 
 Bienvenue dans notre site de messagerie instantanée !
 
