@@ -1,0 +1,25 @@
+keyup: events represent keys being released, 
+
+keydown: events represent keys being pressed
+
+keypress: event represents a character being typed.
+
+onclick:
+
+
+
+
+
+document.getElementById()
+
+var.innerHTML()
+
+var.style.[css] = " "
+
+
+contexte.clientX 
+window.innerWidth
+
+
+
+window.setTimeout(x,y)

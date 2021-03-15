@@ -8,16 +8,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Try It</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/styleFinal.css">
     <link rel="preconnect" href="https://fonts.gstatic.com"> 
     <link rel="preconnect" href="https://fonts.gstatic.com"> 
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Secular+One&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body onload="init();">
     <header>
         <h1> Try it editor!</h1>
     </header>
+    
+
+    <div class="container">
+        <div class="row">
+            <div id="barre" class="col-lg-12 col-md-12 col-sm-12 col-xs-12"">
+                <p id="nomVersion">Version Final</p>
+                
+                <div id="div-actualiser">
+                    <button id="volver" class" type="button" onclick="back();"> <-- </button>
+                    <button id="actualiser" class="" type="button" onclick="actualiser();"> Actualiser </button>
+                    <button id="adelante" class" type="button" onclick="forward();"> --> </button>
+
+                    <input type="checkbox" id="cbAuto" name="cbAuto" onclick="periodiquement();">
+                    <label for="cbAuto"> automatiquement</label>
+                    
+
+                </div>
+                
+        
+            </div>
+
+            <div class="boxedit col-lg-6 col-md-6 col-sm-12 col-xs-12">
+
+                <div id="write" class="boxwrite">
+                    <textarea placeholder="ecrire votre texte ici" id="textWrite" onkeyup=""></textarea>
+                </div>
+            </div>
+        
+            <div class="boxedit col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                <div id="edition" class="boxwrite">
+                    <p>Interieur du div edition</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
 
 
 
