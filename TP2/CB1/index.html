@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- **** H E A D **** -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CTP Frontend</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com"> 
+    <link rel="preconnect" href="https://fonts.gstatic.com"> 
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Secular+One&display=swap" rel="stylesheet">
+</head>
+
+<body onload="init();">
+    
+
+    <div class="container">
+        <div class="row">
+            <div id="baniere" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                
+                <div id="div-baniere" class="d-flex p-2">
+                    <div id="menu-deroulant" class="ban-type dropdown">
+                        <button id="button-menu" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            Titre (niveau 1)
+                        </button>
+                        <div id="menuID" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a id="titre1" class="dropdown-item" href="#" onclick="changerNomT1();">Titre (niveau 1)</a>
+                          <a id="titre2" class="dropdown-item" href="#" onclick="changerNomT2();">Titre (niveau 2)</a>
+                          <a id="paragraph" class="dropdown-item" href="#" onclick="changerNomPar();">Paragraphe</a>
+                          <a id="image" class="dropdown-item" href="#" onclick="changerNomIm();">Image</a>
+                        </div>
+                    </div>
+
+                    <div id="champ-entree" class="ban-type">
+                        <textarea placeholder="CTP Frontend" id="champ-entree-ctp" class="survole" ></textarea>
+
+                    </div>
+
+                    <div id="bouton-val" class="ban-type">
+                        <button id="but-valider" class="survole" type="button" onclick="valider();"> Ok </button>
+
+                    </div>
+                </div>         
+            </div>
+            
+            <div id="main" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h1 id="title-ctp"> CTP Frontend</h1>
+                
+                <div class="boxedit">
+                    <div id="write" class="boxwrite survole">
+                        <p>Un premier paragraph</p>
+                    </div>
+                </div>
+            
+                <div class="boxedit">
+                    <div id="edition" class="boxwrite ">
+                        <textarea placeholder="<p> Un second paragraphe en cours d'edition</p>" id="textWrite" class="survole" onkeyup=""></textarea>
+                        
+                    </div>
+                </div>
+
+            </div>
+
+            
+        </div>
+    </div>
+    
+
+
+
+    <!-- jQuery (Bootstrap JS plugins depend on it) -->
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+
+    <script src="js/script.js"></script>
+    
+    
+</body>
+</html>
